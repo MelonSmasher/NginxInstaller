@@ -1,5 +1,7 @@
-# To run:
+# To Install:
+
+### v1.8.0
 
 ```shell
-curl -sL https://gitlab.sage.edu/network-services/NginxInstallScript/raw/master/nginx-install.sh | bash -
+curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstallScript/v1.8.0/nginx-install.sh | bash -
 ```
