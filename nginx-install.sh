@@ -6,7 +6,7 @@ function die {
 }
 
 # Version of nginx to install
-VERSION=1.8.0
+VERSION=1.8.1
 # Install build environment
 sudo apt-get install build-essential zlib1g-dev libpcre3-dev libssl-dev unzip libssl-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgeoip-dev libgoogle-perftools-dev libperl-dev curl chkconfig -y;
 # Remove apt-version of nginx
