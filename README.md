@@ -1,7 +1,13 @@
 # To Install:
 
-### v1.8.1
+### v1.9.10 with HTTP/2
 
 ```shell
-curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/v1.8.1/nginx-install.sh | bash -
+curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-v1.9-install.sh | bash -
+```
+
+### v1.8.1 with SPDY
+
+```shell
+curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-v1.8-install.sh | bash -
 ```
