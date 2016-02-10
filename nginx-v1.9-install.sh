@@ -6,7 +6,7 @@ function die {
 }
 
 # Version of nginx to install
-VERSION=1.9.10
+VERSION=1.9.11
 # Update apt cache
 sudo apt-get update;
 # Install build environment

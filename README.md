@@ -1,6 +1,6 @@
 # To Install:
 
-### v1.9.10 with HTTP/2
+### v1.9.11 with HTTP/2
 
 ```shell
 curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-v1.9-install.sh | bash -
