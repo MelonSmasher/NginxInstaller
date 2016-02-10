@@ -12,9 +12,7 @@ sudo apt-get update;
 # Install build environment
 sudo apt-get install build-essential zlib1g-dev libpcre3-dev libssl-dev unzip libssl-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgeoip-dev libgoogle-perftools-dev libperl-dev curl unzip atool chkconfig -y;
 # Remove apt-version of nginx
-sudo apt-get remove --purge nginx -y;
-# Stop Nginx if it is installed from source.
-sudo service nginx stop;
+sudo apt-get remove --purge nginx nginx-* -y;
 # Crerate Temp installer dir
 sudo mkdir -p /tmp/NginxInstaller;
 # Get nginx init script
@@ -31,6 +29,8 @@ die "Failed, at configure aborting...";
 make;
 # Exit if make failed
 die "Failed, at make aborting...";
+# Stop Nginx if it is installed from source.
+sudo /etc/init.d/nginx stop;
 # Install Nginx
 sudo make install;
 # Exit if install failed
