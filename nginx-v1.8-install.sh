@@ -13,7 +13,7 @@ function debian_install {
 	# Update apt cache
 	sudo apt-get update;
 	# Install build environment
-	sudo apt-get install build-essential zlib1g-dev libpcre3-dev libssl-dev unzip libssl-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgeoip-dev libgoogle-perftools-dev libperl-dev curl unzip atool chkconfig -y;
+	sudo apt-get install -y build-essential zlib1g-dev libpcre3-dev libssl-dev libssl-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgeoip-dev libgoogle-perftools-dev libperl-dev curl unzip atool chkconfig;
 	# Remove apt-version of nginx
 	sudo apt-get remove --purge nginx nginx-* -y;
 	# Crerate Temp installer dir
