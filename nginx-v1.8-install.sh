@@ -91,6 +91,7 @@ function rhel_install {
 	verify_nginx;
 	# Configure firewall
 	sudo firewall-cmd --permanent --add-service=http
+	sudo firewall-cmd --permanent --add-service=https
 	sudo systemctl restart firewalld
 }
 
