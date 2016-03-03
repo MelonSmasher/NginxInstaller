@@ -54,3 +54,16 @@ function debian_install {
 	## Cleanup
 	sudo rm -rf /tmp/NginxInstaller;
 }
+
+# This function is for Red Hat based systems
+function rhel_install {
+	echo 'RHEL/Centos';
+}
+
+if [ -f /etc/redhat-release ]; then
+	rhel_install;
+elif [ -f /etc/debian_version ]; then
+	debian_install;
+else
+	echo 'Supported Distros are RHEL/Centos and Debian/Ubuntu... sorry.';
+fi

@@ -55,5 +55,15 @@ function debian_install {
 	sudo rm -rf /tmp/NginxInstaller;
 }
 
-# Fire install
-debian_install;
+# This function is for Red Hat based systems
+function rhel_install {
+	echo 'RHEL/Centos';
+}
+
+if [ -f /etc/redhat-release ]; then
+	rhel_install;
+elif [ -f /etc/debian_version ]; then
+	debian_install;
+else
+	echo 'Supported Distros are RHEL/Centos and Debian/Ubuntu... sorry.';
+fi
