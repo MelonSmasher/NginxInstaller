@@ -1,3 +1,7 @@
+* Updated v1.9.x script to 1.9.12
+* Added support for RHEL/Centos
+* Bug fixes
+
 * Initalized Project
 * Created Script
 * Made v1.8.x script
