@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Version of nginx to install
-VERSION=1.9.12
+VERSION=1.9.13
 
 # Function called when the script fails
 function die {
@@ -24,7 +24,8 @@ function download_build_nginx {
 	# Move into nginx src directory.
 	cd /tmp/NginxInstaller/nginx-$VERSION;
 	# Configure with the module path
-	./configure --user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --without-http_scgi_module --without-http_uwsgi_module --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module;
+	./configure --user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --without-http_scgi_module --without-http_uwsgi_module --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module
+;
 	# Exit if configure failed
 	die "Failed, at configure aborting...";
 	# Compile nginx
