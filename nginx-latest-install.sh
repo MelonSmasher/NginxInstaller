@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Version of nginx to install
-VERSION=1.11.1
+VERSION=1.11.4
 
 # Function called when the script fails
 function die {
