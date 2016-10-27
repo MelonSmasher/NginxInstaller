@@ -5,6 +5,7 @@ STABLE=1.10.2
 MAINLINE=1.11.5
 
 # Default Flag Values
+INSTALL_MAINLINE=false
 INSTALL_MAIL=false
 INSTALL_VTS=false
 VERSION_TO_INSTALL=$STABLE
@@ -27,6 +28,10 @@ function cleanup_tmp {
 
 function download_build_nginx {
 	cd /tmp/NginxInstaller;
+	# If we are got the mainline flag, set that as the version to install
+	if $INSTALL_MAINLINE; then VERSION_TO_INSTALL=$MAINLINE; fi;
+	# If we are installing the mail module add the arguments	
+	if $INSTALL_MAIL; then ARGUMENT_STR=$ARGUMENT_STR"--with-mail --with-mail_ssl_module --with-stream "; fi;
 	# IF we are to install the VTS module download it and add it to the argument string
 	# https://github.com/vozlt/nginx-module-vts
 	if $INSTALL_VTS; then
@@ -112,8 +117,8 @@ function rhel_install {
 
 while getopts "xmv" flag; do
   case "${flag}" in
-    x) VERSION_TO_INSTALL=$MAINLINE ;;
-    m) ARGUMENT_STR=$ARGUMENT_STR"--with-mail --with-mail_ssl_module --with-stream " ;;
+    x) INSTALL_MAINLINE=true ;;
+    m) INSTALL_MAIL=true ;;
     v) INSTALL_VTS=true ;;
     *) echo "Unexpected option ${flag} ... ignoring" ;;
   esac
