@@ -26,19 +26,24 @@ function cleanup_tmp {
 	sudo rm -rf /tmp/NginxInstaller;
 }
 
+function prep_modules {
+	cd /tmp/NginxInstaller;
+	# IF we are to install the VTS module download it and add it to the argument string
+	# https://github.com/vozlt/nginx-module-vts
+	if $INSTALL_VTS; then
+		curl -o nginx-vts-module.zip https://codeload.github.com/vozlt/nginx-module-vts/zip/master;
+		unzip nginx-vts-module.zip;
+		rm nginx-vts-module.zip;
+		ARGUMENT_STR=$ARGUMENT_STR"--add-module=/tmp/NginxInstaller/nginx-module-vts-master "
+	fi
+}
+
 function download_build_nginx {
 	cd /tmp/NginxInstaller;
 	# If we are got the mainline flag, set that as the version to install
 	if $INSTALL_MAINLINE; then VERSION_TO_INSTALL=$MAINLINE; fi;
 	# If we are installing the mail module add the 	
 	if $INSTALL_MAIL; then ARGUMENT_STR=$ARGUMENT_STR"--with-mail --with-mail_ssl_module --with-stream "; fi;
-	# IF we are to install the VTS module download it and add it to the argument string
-	# https://github.com/vozlt/nginx-module-vts
-	if $INSTALL_VTS; then
-		cd /tmp/NginxInstaller;
-		curl -o nginx-vts-module.zip https://codeload.github.com/vozlt/nginx-module-vts/zip/master && unzip nginx-vts-module.zip && rm nginx-vts-module.zip;
-		ARGUMENT_STR=$ARGUMENT_STR"--add-module=/tmp/NginxInstaller/nginx-module-vts-master "
-	fi
 	# Get Nginx Source
 	cd /tmp/NginxInstaller; curl http://nginx.org/download/nginx-$VERSION_TO_INSTALL.tar.gz | tar xvz;
 	# Move into nginx src directory.
@@ -81,6 +86,8 @@ function debian_install {
 	sudo apt-get remove --purge nginx nginx-* -y;
 	# Get nginx init script
 	cd /tmp/NginxInstaller; curl -o nginx-sysvinit-script.zip https://codeload.github.com/Fleshgrinder/nginx-sysvinit-script/zip/master && aunpack nginx-sysvinit-script.zip; rm nginx-sysvinit-script.zip;
+	# Gather Modules to be installed
+	prep_modules;
 	# Get Nginx and build it
 	download_build_nginx;
 	# Install NGINX init script
@@ -95,6 +102,8 @@ function debian_install {
 function rhel_install {
 	# Install build environment
 	sudo yum -y install gcc gcc-c++ make zlib-devel pcre-devel openssl-devel curl unzip;
+	# Gather Modules to be installed
+	prep_modules;
 	# Get Nginx and build it
 	download_build_nginx;
 	# Download RHEL/Centos init script
