@@ -116,7 +116,7 @@ function rhel_install {
 	sudo systemctl restart firewalld
 }
 
-while getopts 'xmv' flag; do
+while getopts xmv: flag; do
   case "${flag}" in
     x) INSTALL_MAINLINE="true" ;;
     m) INSTALL_MAIL="true" ;;
