@@ -30,13 +30,13 @@ function download_build_nginx {
 	cd /tmp/NginxInstaller;
 	# If we are got the mainline flag, set that as the version to install
 	if $INSTALL_MAINLINE; then VERSION_TO_INSTALL=$MAINLINE; fi;
-	# If we are installing the mail module add the arguments	
+	# If we are installing the mail module add the 	
 	if $INSTALL_MAIL; then ARGUMENT_STR=$ARGUMENT_STR"--with-mail --with-mail_ssl_module --with-stream "; fi;
 	# IF we are to install the VTS module download it and add it to the argument string
 	# https://github.com/vozlt/nginx-module-vts
 	if $INSTALL_VTS; then
 		cd /tmp/NginxInstaller;
-		curl -o nginx-vts-module.zip https://codeload.github.com/vozlt/nginx-module-vts/zip/master && aunpack nginx-vts-module.zip && rm nginx-vts-module.zip;
+		curl -o nginx-vts-module.zip https://codeload.github.com/vozlt/nginx-module-vts/zip/master && unzip nginx-vts-module.zip && rm nginx-vts-module.zip;
 		ARGUMENT_STR=$ARGUMENT_STR"--add-module=/tmp/NginxInstaller/nginx-module-vts-master "
 	fi
 	# Get Nginx Source
