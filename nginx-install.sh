@@ -5,9 +5,9 @@ STABLE=1.10.2
 MAINLINE=1.11.5
 
 # Default Flag Values
-INSTALL_MAINLINE="false"
-INSTALL_MAIL="false"
-INSTALL_VTS="false"
+INSTALL_MAINLINE=false
+INSTALL_MAIL=false
+INSTALL_VTS=false
 VERSION_TO_INSTALL=$STABLE
 
 # Function called when the script fails
@@ -28,18 +28,18 @@ function cleanup_tmp {
 function download_build_nginx {
 	cd /tmp/NginxInstaller;
 	# Determine what version needs to be installed
-	if [ $INSTALL_MAINLINE == "true" ]; then
+	if $INSTALL_MAINLINE; then
 		VERSION_TO_INSTALL=$MAINLINE
 	fi
 	# Build argument string
 	ARGUMENT_STR="--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --without-http_scgi_module --without-http_uwsgi_module --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module "
 	# If we are to install the mail modules, add them to the argument string
-	if [ $INSTALL_MAIL == "true" ]; then
+	if $INSTALL_MAIL; then
 		ARGUMENT_STR=$ARGUMENT_STR"--with-mail --with-mail_ssl_module --with-stream "
 	fi
 	# IF we are to install the VTS module download it and add it to the argument string
 	# https://github.com/vozlt/nginx-module-vts
-	if [ $INSTALL_VTS == "true" ]; then
+	if $INSTALL_VTS; then
 		cd /tmp/NginxInstaller;
 		curl -o nginx-vts-module.zip https://codeload.github.com/vozlt/nginx-module-vts/zip/master && aunpack nginx-vts-module.zip; rm nginx-vts-module.zip;
 		ARGUMENT_STR=$ARGUMENT_STR"--add-module=/tmp/NginxInstaller/nginx-module-vts-master "
@@ -122,10 +122,10 @@ function rhel_install {
 
 while getopts xmv: flag; do
   case "${flag}" in
-    x) INSTALL_MAINLINE="true" ;;
-    m) INSTALL_MAIL="true" ;;
-    v) INSTALL_VTS="true" ;;
-    *) error "Unexpected option ${flag}" ;;
+    x) INSTALL_MAINLINE=true ;;
+    m) INSTALL_MAIL=true ;;
+    v) INSTALL_VTS=true ;;
+    *) echo "Unexpected option ${flag} ... ignoring" ;;
   esac
 done
 
