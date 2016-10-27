@@ -3,13 +3,13 @@
 ### Stable (1.10.2) with HTTP/2
 
 ```shell
-curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -
+curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s --
 ```
 
 ### Mainline (1.11.5) with HTTP/2
 
 ```shell
-curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -- -x
+curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s -- -x
 ```
 
 #### Options:
