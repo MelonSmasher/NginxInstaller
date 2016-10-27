@@ -28,6 +28,8 @@ function cleanup_tmp {
 
 function prep_modules {
 	cd /tmp/NginxInstaller;
+	# If we are installing the mail module add the 	
+	if $INSTALL_MAIL; then ARGUMENT_STR=$ARGUMENT_STR"--with-mail --with-mail_ssl_module --with-stream "; fi;
 	# IF we are to install the VTS module download it and add it to the argument string
 	# https://github.com/vozlt/nginx-module-vts
 	if $INSTALL_VTS; then
@@ -42,8 +44,6 @@ function download_build_nginx {
 	cd /tmp/NginxInstaller;
 	# If we are got the mainline flag, set that as the version to install
 	if $INSTALL_MAINLINE; then VERSION_TO_INSTALL=$MAINLINE; fi;
-	# If we are installing the mail module add the 	
-	if $INSTALL_MAIL; then ARGUMENT_STR=$ARGUMENT_STR"--with-mail --with-mail_ssl_module --with-stream "; fi;
 	# Get Nginx Source
 	cd /tmp/NginxInstaller; curl http://nginx.org/download/nginx-$VERSION_TO_INSTALL.tar.gz | tar xvz;
 	# Move into nginx src directory.
