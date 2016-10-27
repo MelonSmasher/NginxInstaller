@@ -1,13 +1,19 @@
 # To Install:
 
-### Stable (1.10.2) with HTTP/2 Stream Mail Status RealIP
+### Stable (1.10.2) with HTTP/2
 
 ```shell
-curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-stable-install.sh | bash -
+curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -
 ```
 
-### Mainline (1.11.5) with HTTP/2 Stream Mail Status RealIP
+### Mainline (1.11.5) with HTTP/2
 
 ```shell
-curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-mainline-install.sh | bash -
+curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -- -x
 ```
+
+#### Options:
+
+* -x `Install Mainline instead of stable`
+* -m `Install Mail module`
+* -v `Install VTS module` [more info](https://github.com/vozlt/nginx-module-vts)
