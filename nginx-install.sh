@@ -27,6 +27,10 @@ function cleanup_tmp {
 
 function download_build_nginx {
 	cd /tmp/NginxInstaller;
+	# Determine what version needs to be installed
+	if [ $INSTALL_MAINLINE == "true" ]; then
+		VERSION_TO_INSTALL=$MAINLINE
+	fi
 	# Build argument string
 	ARGUMENT_STR="--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --without-http_scgi_module --without-http_uwsgi_module --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module "
 	# If we are to install the mail modules, add them to the argument string
