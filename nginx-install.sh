@@ -30,7 +30,7 @@ function cleanup_tmp {
 }
 
 function prep_modules {
-	cd /tmp/NginxInstaller;
+	cd /usr/local/src;
 	# If we are installing the mail module add the 	
 	if $INSTALL_MAIL; then ARGUMENT_STR=$ARGUMENT_STR'--with-mail --with-mail_ssl_module '; fi;
 	# Should we enable GEO IP support
