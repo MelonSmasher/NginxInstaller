@@ -3,13 +3,16 @@
 # NGINX Versions
 STABLE=1.10.2
 MAINLINE=1.11.5
-
+# OpenSSL Version for ALPN
+OPENSSL_VERSION='openssl-1.0.2j'
 # Default Flag Values
 INSTALL_MAINLINE=false
 INSTALL_MAIL=false
 INSTALL_VTS=false
+ALPN_SUPPORT=false
+GEOP_IP_SUPPORT=false
 VERSION_TO_INSTALL=$STABLE
-ARGUMENT_STR="--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --without-http_scgi_module --without-http_uwsgi_module --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module ";
+ARGUMENT_STR="--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --without-http_scgi_module --without-http_uwsgi_module --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module --with-stream ";
 
 # Function called when the script fails
 function die {
@@ -29,14 +32,24 @@ function cleanup_tmp {
 function prep_modules {
 	cd /tmp/NginxInstaller;
 	# If we are installing the mail module add the 	
-	if $INSTALL_MAIL; then ARGUMENT_STR=$ARGUMENT_STR"--with-mail --with-mail_ssl_module --with-stream "; fi;
+	if $INSTALL_MAIL; then ARGUMENT_STR=$ARGUMENT_STR'--with-mail --with-mail_ssl_module '; fi;
+	# Should we enable GEO IP support
+	if $GEOP_IP_SUPPORT; then ARGUMENT_STR=$ARGUMENT_STR'--with-http_geoip_module '; fi;
 	# IF we are to install the VTS module download it and add it to the argument string
 	# https://github.com/vozlt/nginx-module-vts
 	if $INSTALL_VTS; then
+		cd /usr/local/src;
 		curl -o nginx-vts-module.zip https://codeload.github.com/vozlt/nginx-module-vts/zip/master;
 		unzip nginx-vts-module.zip;
 		rm nginx-vts-module.zip;
-		ARGUMENT_STR=$ARGUMENT_STR"--add-module=/tmp/NginxInstaller/nginx-module-vts-master "
+		ARGUMENT_STR=$ARGUMENT_STR'--add-module=/usr/local/src/nginx-module-vts-master '
+	fi
+	# Download OpenSSL and add argument
+	if $ALPN_SUPPORT; then
+		cd /usr/local/src;
+		curl -o $OPENSSL_VERSION'.tar.gz' 'https://www.openssl.org/source/'$OPENSSL_VERSION'.tar.gz';
+		tar -zxvf $OPENSSL_VERSION'.tar.gz' -C /usr/local/src;
+		ARGUMENT_STR=$ARGUMENT_STR'--with-openssl=/usr/local/src/'$OPENSSL_VERSION' ';
 	fi
 }
 
@@ -100,8 +113,10 @@ function debian_install {
 
 # This function is for Red Hat based systems
 function rhel_install {
+	# Install dev tools group
+	sudo yum -y groupinstall 'Development Tools';
 	# Install build environment
-	sudo yum -y install gcc gcc-c++ make zlib-devel pcre-devel openssl-devel curl unzip;
+	sudo yum -y install openssl-devel libxml2-devel libxslt-devel gd-devel perl-ExtUtils-Embed GeoIP-devel zlib-devel pcre-devel curl unzip;
 	# Gather Modules to be installed
 	prep_modules;
 	# Get Nginx and build it
@@ -124,11 +139,13 @@ function rhel_install {
 	sudo systemctl restart firewalld
 }
 
-while getopts "xmv" flag; do
+while getopts "xmvag" flag; do
   case "${flag}" in
     x) INSTALL_MAINLINE=true ;;
     m) INSTALL_MAIL=true ;;
     v) INSTALL_VTS=true ;;
+	a) ALPN_SUPPORT=true ;;
+	g) GEOP_IP_SUPPORT=true ;;
     *) echo "Unexpected option ${flag} ... ignoring" ;;
   esac
 done

@@ -14,6 +14,8 @@ curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/ng
 
 #### Options:
 
-* -x `Install Mainline instead of stable`
-* -m `Install Mail module`
-* -v `Install VTS module` [more info](https://github.com/vozlt/nginx-module-vts)
+* -x `Install Mainline instead of Stable`
+* -m `Compile with Mail module`
+* -v `Compile with VTS module` [more info](https://github.com/vozlt/nginx-module-vts)
+* -a `Compile with ALPN support`
+* -g `Compile with GEO IP module`
