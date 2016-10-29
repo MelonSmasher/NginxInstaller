@@ -49,6 +49,7 @@ function prep_modules {
 		cd /usr/local/src;
 		curl -o $OPENSSL_VERSION'.tar.gz' 'https://www.openssl.org/source/'$OPENSSL_VERSION'.tar.gz';
 		tar -zxvf $OPENSSL_VERSION'.tar.gz' -C /usr/local/src;
+		rm $OPENSSL_VERSION'.tar.gz';
 		ARGUMENT_STR=$ARGUMENT_STR'--with-openssl=/usr/local/src/'$OPENSSL_VERSION' ';
 	fi
 }
