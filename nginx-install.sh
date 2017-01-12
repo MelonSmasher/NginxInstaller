@@ -13,9 +13,9 @@ ALPN_SUPPORT=false
 GEOP_IP_SUPPORT=false
 LDAP_AUTH_SUPPORT=false
 VERSION_TO_INSTALL=$STABLE
-ARGUMENT_STR="--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module --with-stream ";
-YUM_PACKAGES="openssl-devel libxml2-devel libxslt-devel gd perl-ExtUtils-Embed zlib-devel pcre-devel curl unzip";
-APT_PACKAGES="build-essential zlib1g-dev libpcre3-dev libssl-dev libssl-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgoogle-perftools-dev libperl-dev curl unzip atool chkconfig";
+ARGUMENT_STR='--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module --with-stream ';
+YUM_PACKAGES='openssl-devel libxml2-devel libxslt-devel gd perl-ExtUtils-Embed zlib-devel pcre-devel curl unzip ';
+APT_PACKAGES='build-essential zlib1g-dev libpcre3-dev libssl-dev libssl-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgoogle-perftools-dev libperl-dev curl unzip atool chkconfig ';
 
 # Function called when the script fails
 function die {
@@ -32,32 +32,50 @@ function cleanup_tmp {
 	sudo rm -rf /tmp/NginxInstaller;
 }
 
-function prep_modules {
-	cd /usr/local/src;
+function prep_args {
 	# If we are installing the mail module add the
-	if $INSTALL_MAIL; then ARGUMENT_STR=$ARGUMENT_STR'--with-mail --with-mail_ssl_module '; fi;
+	if $INSTALL_MAIL;
+		then ARGUMENT_STR=$ARGUMENT_STR'--with-mail --with-mail_ssl_module ';
+	fi
 	# Should we enable GEO IP support
 	if $GEOP_IP_SUPPORT; then
 		ARGUMENT_STR=$ARGUMENT_STR'--with-http_geoip_module ';
-		YUM_PACKAGES="$YUM_PACKAGES GeoIP-devel GeoIP";
-		APT_PACKAGES="$APT_PACKAGES libgeoip-dev";
+		YUM_PACKAGES=$YUM_PACKAGES'GeoIP-devel GeoIP ';
+		APT_PACKAGES=$APT_PACKAGES'libgeoip-dev ';
 	fi
-	# IF we are to install the VTS module download it and add it to the argument string
+	# IF we are to install the VTS add it to the argument string
+	# https://github.com/vozlt/nginx-module-vts
+	if $INSTALL_VTS; then
+		ARGUMENT_STR=$ARGUMENT_STR'--add-module=/usr/local/src/nginx-module-vts-master ';
+	fi
+	# If wee need ALPN add ssl argument
+	if $ALPN_SUPPORT; then
+		ARGUMENT_STR=$ARGUMENT_STR'--with-openssl=/usr/local/src/'$OPENSSL_VERSION' ';
+	fi
+	# ADD LDAP module arguments
+	if $LDAP_AUTH_SUPPORT; then
+		ARGUMENT_STR=$ARGUMENT_STR'--add-module=/usr/local/src/nginx-auth-ldap-master ';
+		YUM_PACKAGES=$YUM_PACKAGES'openldap-devel openldap openldap-clients ';
+		APT_PACKAGES=$APT_PACKAGES'libldap2-dev openldap ';
+	fi
+}
+
+function prep_modules {
+	cd /usr/local/src;
+	# IF we are to install the VTS module download it
 	# https://github.com/vozlt/nginx-module-vts
 	if $INSTALL_VTS; then
 		cd /usr/local/src;
 		curl -o nginx-vts-module.zip https://codeload.github.com/vozlt/nginx-module-vts/zip/master;
 		unzip nginx-vts-module.zip;
 		rm nginx-vts-module.zip;
-		ARGUMENT_STR=$ARGUMENT_STR'--add-module=/usr/local/src/nginx-module-vts-master ';
 	fi
-	# Download OpenSSL and add argument
+	# Download OpenSSL
 	if $ALPN_SUPPORT; then
 		cd /usr/local/src;
 		curl -o $OPENSSL_VERSION'.tar.gz' 'https://www.openssl.org/source/'$OPENSSL_VERSION'.tar.gz';
 		tar -zxvf $OPENSSL_VERSION'.tar.gz' -C /usr/local/src;
 		rm $OPENSSL_VERSION'.tar.gz';
-		ARGUMENT_STR=$ARGUMENT_STR'--with-openssl=/usr/local/src/'$OPENSSL_VERSION' ';
 	fi
 	# Download LDAP auth module
 	if $LDAP_AUTH_SUPPORT; then
@@ -65,9 +83,6 @@ function prep_modules {
 		curl -o nginx-auth-ldap.zip https://codeload.github.com/kvspb/nginx-auth-ldap/zip/master;
 		unzip nginx-auth-ldap.zip;
 		rm nginx-auth-ldap.zip;
-		ARGUMENT_STR=$ARGUMENT_STR'--add-module=/usr/local/src/nginx-auth-ldap-master ';
-		YUM_PACKAGES="$YUM_PACKAGES openldap-devel openldap openldap-clients";
-		APT_PACKAGES="$APT_PACKAGES libldap2-dev openldap";
 	fi
 }
 
@@ -109,8 +124,6 @@ function verify_nginx {
 
 # This function is for debian based systems
 function debian_install {
-	# Gather Modules to be installed
-	prep_modules;
 	# Update apt cache
 	sudo apt-get update;
 	# Install build environment
@@ -119,6 +132,8 @@ function debian_install {
 	sudo apt-get remove --purge nginx nginx-* -y;
 	# Get nginx init script
 	cd /tmp/NginxInstaller; curl -o nginx-sysvinit-script.zip https://codeload.github.com/Fleshgrinder/nginx-sysvinit-script/zip/master && aunpack nginx-sysvinit-script.zip; rm nginx-sysvinit-script.zip;
+	# Gather Modules to be installed
+	prep_modules;
 	# Get Nginx and build it
 	download_build_nginx;
 	# Install NGINX init script
@@ -131,12 +146,12 @@ function debian_install {
 
 # This function is for Red Hat based systems
 function rhel_install {
-	# Gather Modules to be installed
-	prep_modules;
 	# Install dev tools group
 	sudo yum -y groupinstall 'Development Tools';
 	# Install build environment
 	sudo yum -y install $YUM_PACKAGES;
+	# Gather Modules to be installed
+	prep_modules;
 	# Get Nginx and build it
 	download_build_nginx;
 	# Download RHEL/Centos init script
@@ -168,6 +183,8 @@ while getopts "xmvagl" flag; do
     *) echo "Unexpected option ${flag} ... ignoring" ;;
   esac
 done
+
+prep_args;
 
 if [ -f /etc/redhat-release ]; then
 	init_tmp;
