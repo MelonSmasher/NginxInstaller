@@ -157,14 +157,14 @@ function rhel_install {
 	sudo systemctl restart firewalld
 }
 
-while getopts "xmvag" flag; do
+while getopts "xmvagl" flag; do
   case "${flag}" in
     x) INSTALL_MAINLINE=true ;;
     m) INSTALL_MAIL=true ;;
     v) INSTALL_VTS=true ;;
-	a) ALPN_SUPPORT=true ;;
-	g) GEOP_IP_SUPPORT=true ;;
-	l) LDAP_AUTH_SUPPORT=true ;;
+		a) ALPN_SUPPORT=true ;;
+		g) GEOP_IP_SUPPORT=true ;;
+		l) LDAP_AUTH_SUPPORT=true ;;
     *) echo "Unexpected option ${flag} ... ignoring" ;;
   esac
 done
