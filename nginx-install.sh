@@ -12,7 +12,7 @@ INSTALL_VTS=false
 ALPN_SUPPORT=false
 GEOP_IP_SUPPORT=false
 VERSION_TO_INSTALL=$STABLE
-ARGUMENT_STR="--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --without-http_scgi_module --without-http_uwsgi_module --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module --with-stream ";
+ARGUMENT_STR="--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module --with-stream ";
 
 # Function called when the script fails
 function die {
