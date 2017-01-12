@@ -109,6 +109,8 @@ function verify_nginx {
 
 # This function is for debian based systems
 function debian_install {
+	# Gather Modules to be installed
+	prep_modules;
 	# Update apt cache
 	sudo apt-get update;
 	# Install build environment
@@ -117,8 +119,6 @@ function debian_install {
 	sudo apt-get remove --purge nginx nginx-* -y;
 	# Get nginx init script
 	cd /tmp/NginxInstaller; curl -o nginx-sysvinit-script.zip https://codeload.github.com/Fleshgrinder/nginx-sysvinit-script/zip/master && aunpack nginx-sysvinit-script.zip; rm nginx-sysvinit-script.zip;
-	# Gather Modules to be installed
-	prep_modules;
 	# Get Nginx and build it
 	download_build_nginx;
 	# Install NGINX init script
@@ -131,12 +131,12 @@ function debian_install {
 
 # This function is for Red Hat based systems
 function rhel_install {
+	# Gather Modules to be installed
+	prep_modules;
 	# Install dev tools group
 	sudo yum -y groupinstall 'Development Tools';
 	# Install build environment
 	sudo yum -y install $YUM_PACKAGES;
-	# Gather Modules to be installed
-	prep_modules;
 	# Get Nginx and build it
 	download_build_nginx;
 	# Download RHEL/Centos init script
