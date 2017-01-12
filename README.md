@@ -19,3 +19,4 @@ curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/ng
 * -v `Compile with VTS module` [more info](https://github.com/vozlt/nginx-module-vts)
 * -a `Compile with ALPN support`
 * -g `Compile with GEO IP module`
+* -l `Compile with LDAP auth module` [more info](https://github.com/kvspb/nginx-auth-ldap)
