@@ -66,7 +66,7 @@ function prep_modules {
 		unzip nginx-auth-ldap.zip;
 		rm nginx-auth-ldap.zip;
 		ARGUMENT_STR=$ARGUMENT_STR'--add-module=/usr/local/src/nginx-auth-ldap-master ';
-		YUM_PACKAGES=$YUM_PACKAGES'openldap-devel libldap-dev';
+		YUM_PACKAGES=$YUM_PACKAGES'openldap-devel openldap openldap-clients';
 		APT_PACKAGES=$APT_PACKAGES'libldap2-dev openldap ';
 	fi
 }
