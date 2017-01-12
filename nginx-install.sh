@@ -14,8 +14,8 @@ GEOP_IP_SUPPORT=false
 LDAP_AUTH_SUPPORT=false
 VERSION_TO_INSTALL=$STABLE
 ARGUMENT_STR="--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module --with-stream ";
-YUM_PACKAGES="openssl-devel libxml2-devel libxslt-devel gd perl-ExtUtils-Embed zlib-devel pcre-devel curl unzip ";
-APT_PACKAGES="build-essential zlib1g-dev libpcre3-dev libssl-dev libssl-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgoogle-perftools-dev libperl-dev curl unzip atool chkconfig ";
+YUM_PACKAGES="openssl-devel libxml2-devel libxslt-devel gd perl-ExtUtils-Embed zlib-devel pcre-devel curl unzip";
+APT_PACKAGES="build-essential zlib1g-dev libpcre3-dev libssl-dev libssl-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgoogle-perftools-dev libperl-dev curl unzip atool chkconfig";
 
 # Function called when the script fails
 function die {
@@ -39,8 +39,8 @@ function prep_modules {
 	# Should we enable GEO IP support
 	if $GEOP_IP_SUPPORT; then
 		ARGUMENT_STR=$ARGUMENT_STR'--with-http_geoip_module ';
-		YUM_PACKAGES=$YUM_PACKAGES'GeoIP-devel GeoIP';
-		APT_PACKAGES=$APT_PACKAGES'libgeoip-dev ';
+		YUM_PACKAGES="$YUM_PACKAGES GeoIP-devel GeoIP";
+		APT_PACKAGES="$APT_PACKAGES libgeoip-dev";
 	fi
 	# IF we are to install the VTS module download it and add it to the argument string
 	# https://github.com/vozlt/nginx-module-vts
@@ -66,8 +66,8 @@ function prep_modules {
 		unzip nginx-auth-ldap.zip;
 		rm nginx-auth-ldap.zip;
 		ARGUMENT_STR=$ARGUMENT_STR'--add-module=/usr/local/src/nginx-auth-ldap-master ';
-		YUM_PACKAGES=$YUM_PACKAGES'openldap-devel openldap openldap-clients';
-		APT_PACKAGES=$APT_PACKAGES'libldap2-dev openldap ';
+		YUM_PACKAGES="$YUM_PACKAGES openldap-devel openldap openldap-clients";
+		APT_PACKAGES="$APT_PACKAGES libldap2-dev openldap";
 	fi
 }
 
