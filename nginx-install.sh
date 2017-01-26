@@ -2,7 +2,7 @@
 
 # NGINX Versions
 STABLE=1.10.2
-MAINLINE=1.11.8
+MAINLINE=1.11.9
 # OpenSSL Version for ALPN
 OPENSSL_VERSION='openssl-1.0.2j'
 # Default Flag Values
@@ -13,9 +13,22 @@ ALPN_SUPPORT=false
 GEOP_IP_SUPPORT=false
 LDAP_AUTH_SUPPORT=false
 VERSION_TO_INSTALL=$STABLE
+FORCE_INSTALL=false
 ARGUMENT_STR='--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module --with-stream ';
 YUM_PACKAGES='openssl-devel libxml2-devel libxslt-devel gd perl-ExtUtils-Embed zlib-devel pcre-devel curl unzip ';
 APT_PACKAGES='build-essential zlib1g-dev libpcre3-dev libssl-dev libssl-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgoogle-perftools-dev libperl-dev curl unzip atool chkconfig ';
+
+# Function determines if the correct version of Nginx is already installed
+function is_correct_version_installed(expected) {
+	NGINX_VERSION_STRING=$(nginx -v)
+	IFS='/' read -r -a parts <<< "$NGINX_VERSION_STRING"
+	if [ $expected=$$parts[1] ];
+	then
+		return true;
+	else
+		return false;
+	fi
+}
 
 # Function called when the script fails
 function die {
@@ -88,8 +101,6 @@ function prep_modules {
 
 function download_build_nginx {
 	cd /tmp/NginxInstaller;
-	# If we are got the mainline flag, set that as the version to install
-	if $INSTALL_MAINLINE; then VERSION_TO_INSTALL=$MAINLINE; fi;
 	# Get Nginx Source
 	cd /tmp/NginxInstaller; curl http://nginx.org/download/nginx-$VERSION_TO_INSTALL.tar.gz | tar xvz;
 	# Move into nginx src directory.
@@ -180,20 +191,29 @@ while getopts "xmvagl" flag; do
     a) ALPN_SUPPORT=true ;;
     g) GEOP_IP_SUPPORT=true ;;
     l) LDAP_AUTH_SUPPORT=true ;;
+	f) FORCE_INSTALL=true;;
     *) echo "Unexpected option ${flag} ... ignoring" ;;
   esac
 done
 
 prep_args;
 
-if [ -f /etc/redhat-release ]; then
-	init_tmp;
-	rhel_install;
-	cleanup_tmp;
-elif [ -f /etc/debian_version ]; then
-	init_tmp;
-	debian_install;
-	cleanup_tmp;
-else
-	echo 'Supported Distros are RHEL/Centos and Debian/Ubuntu... sorry.';
+# If we are got the mainline flag, set that as the version to install
+if $INSTALL_MAINLINE; then VERSION_TO_INSTALL=$MAINLINE; fi;
+SHOULD_INSTALL = $(is_correct_version_installed($VERSION_TO_INSTALL))
+if $FORCE_INSTALL; then SHOULD_INSTALL=true; fi;
+
+if $SHOULD_INSTALL;
+then
+	if [ -f /etc/redhat-release ]; then
+		init_tmp;
+		rhel_install;
+		cleanup_tmp;
+	elif [ -f /etc/debian_version ]; then
+		init_tmp;
+		debian_install;
+		cleanup_tmp;
+	else
+		echo 'Supported Distros are RHEL/Centos and Debian/Ubuntu... sorry.';
+	fi
 fi

@@ -6,7 +6,7 @@
 curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s --
 ```
 
-### Mainline (1.11.8) with HTTP/2
+### Mainline (1.11.9) with HTTP/2
 
 ```shell
 curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s -- -x
@@ -20,3 +20,4 @@ curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/ng
 * -a `Compile with ALPN support`
 * -g `Compile with GEO IP module`
 * -l `Compile with LDAP auth module` [more info](https://github.com/kvspb/nginx-auth-ldap)
+* -f `Force the installation even if the correct version is installed.`
