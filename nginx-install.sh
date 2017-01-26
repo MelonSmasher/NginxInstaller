@@ -1,8 +1,8 @@
 #! /bin/bash
 
 # NGINX Versions
-STABLE=1.10.2
-MAINLINE=1.11.9
+STABLE="1.10.2"
+MAINLINE="1.11.9"
 # OpenSSL Version for ALPN
 OPENSSL_VERSION='openssl-1.0.2j'
 # Default Flag Values
@@ -12,23 +12,11 @@ INSTALL_VTS=false
 ALPN_SUPPORT=false
 GEOP_IP_SUPPORT=false
 LDAP_AUTH_SUPPORT=false
-VERSION_TO_INSTALL=$STABLE
 FORCE_INSTALL=false
+VERSION_TO_INSTALL=$STABLE
 ARGUMENT_STR='--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module --with-stream ';
 YUM_PACKAGES='openssl-devel libxml2-devel libxslt-devel gd perl-ExtUtils-Embed zlib-devel pcre-devel curl unzip ';
 APT_PACKAGES='build-essential zlib1g-dev libpcre3-dev libssl-dev libssl-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgoogle-perftools-dev libperl-dev curl unzip atool chkconfig ';
-
-# Function determines if the correct version of Nginx is already installed
-function is_correct_version_installed () {
-	NGINX_VERSION_STRING=$(nginx -v)
-	IFS='/' read -r -a parts <<< "$NGINX_VERSION_STRING"
-	if [ $1=$$parts[1] ];
-	then
-		return true;
-	else
-		return false;
-	fi
-}
 
 # Function called when the script fails
 function die {
@@ -183,26 +171,7 @@ function rhel_install {
 	sudo systemctl restart firewalld;
 }
 
-while getopts "xmvaglf" flag; do
-  case "${flag}" in
-    x) INSTALL_MAINLINE=true ;;
-    m) INSTALL_MAIL=true ;;
-    v) INSTALL_VTS=true ;;
-    a) ALPN_SUPPORT=true ;;
-    g) GEOP_IP_SUPPORT=true ;;
-    l) LDAP_AUTH_SUPPORT=true ;;
-    f) FORCE_INSTALL=true;;
-    *) echo "Unexpected option ${flag} ... ignoring" ;;
-  esac
-done
-
-# If we are got the mainline flag, set that as the version to install
-if $INSTALL_MAINLINE; then VERSION_TO_INSTALL=$MAINLINE; fi;
-SHOULD_INSTALL = $(is_correct_version_installed($VERSION_TO_INSTALL))
-if $FORCE_INSTALL; then SHOULD_INSTALL=true; fi;
-
-if $SHOULD_INSTALL;
-then
+function begin_install {
 	prep_args;
 	if [ -f /etc/redhat-release ]; then
 		init_tmp;
@@ -215,4 +184,29 @@ then
 	else
 		echo 'Supported Distros are RHEL/Centos and Debian/Ubuntu... sorry.';
 	fi
+}
+
+while getopts "xmvaglf" flag; do
+  case "${flag}" in
+    x) INSTALL_MAINLINE=true ;;
+    m) INSTALL_MAIL=true ;;
+    v) INSTALL_VTS=true ;;
+    a) ALPN_SUPPORT=true ;;
+    g) GEOP_IP_SUPPORT=true ;;
+    l) LDAP_AUTH_SUPPORT=true ;;
+    f) FORCE_INSTALL=true ;;
+    *) echo "Unexpected option ${flag} ... ignoring" ;;
+  esac
+done
+
+# If we are got the mainline flag, set that as the version to install
+if $INSTALL_MAINLINE; then VERSION_TO_INSTALL=$MAINLINE; fi;
+nginx -v &> /tmp/nginx_version;
+NGINX_VERSION_STRING=$(cat /tmp/nginx_version);
+DESIRED_VERSION_STRING="nginx version: nginx/$VERSION_TO_INSTALL";
+
+if [  "$DESIRED_VERSION_STRING" != "$NGINX_VERSION_STRING" ]; then
+	begin_install
+elif $FORCE_INSTALL; then
+	begin_install
 fi
