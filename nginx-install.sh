@@ -19,10 +19,10 @@ YUM_PACKAGES='openssl-devel libxml2-devel libxslt-devel gd perl-ExtUtils-Embed z
 APT_PACKAGES='build-essential zlib1g-dev libpcre3-dev libssl-dev libssl-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgoogle-perftools-dev libperl-dev curl unzip atool chkconfig ';
 
 # Function determines if the correct version of Nginx is already installed
-function is_correct_version_installed(expected) {
+function is_correct_version_installed () {
 	NGINX_VERSION_STRING=$(nginx -v)
 	IFS='/' read -r -a parts <<< "$NGINX_VERSION_STRING"
-	if [ $expected=$$parts[1] ];
+	if [ $1=$$parts[1] ];
 	then
 		return true;
 	else
