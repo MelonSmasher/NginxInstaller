@@ -196,8 +196,6 @@ while getopts "xmvagl" flag; do
   esac
 done
 
-prep_args;
-
 # If we are got the mainline flag, set that as the version to install
 if $INSTALL_MAINLINE; then VERSION_TO_INSTALL=$MAINLINE; fi;
 SHOULD_INSTALL = $(is_correct_version_installed($VERSION_TO_INSTALL))
@@ -205,6 +203,7 @@ if $FORCE_INSTALL; then SHOULD_INSTALL=true; fi;
 
 if $SHOULD_INSTALL;
 then
+	prep_args;
 	if [ -f /etc/redhat-release ]; then
 		init_tmp;
 		rhel_install;
