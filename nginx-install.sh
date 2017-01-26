@@ -183,7 +183,7 @@ function rhel_install {
 	sudo systemctl restart firewalld;
 }
 
-while getopts "xmvagl" flag; do
+while getopts "xmvaglf" flag; do
   case "${flag}" in
     x) INSTALL_MAINLINE=true ;;
     m) INSTALL_MAIL=true ;;
