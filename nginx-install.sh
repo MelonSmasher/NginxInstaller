@@ -191,7 +191,7 @@ while getopts "xmvagl" flag; do
     a) ALPN_SUPPORT=true ;;
     g) GEOP_IP_SUPPORT=true ;;
     l) LDAP_AUTH_SUPPORT=true ;;
-	f) FORCE_INSTALL=true;;
+    f) FORCE_INSTALL=true;;
     *) echo "Unexpected option ${flag} ... ignoring" ;;
   esac
 done
