@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # NGINX Versions
-STABLE="1.10.2"
+STABLE="1.10.3"
 MAINLINE="1.11.9"
 # OpenSSL Version for ALPN
 OPENSSL_VERSION='openssl-1.0.2j'

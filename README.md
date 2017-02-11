@@ -1,6 +1,6 @@
 # To Install:
 
-### Stable (1.10.2) with HTTP/2
+### Stable (1.10.3) with HTTP/2
 
 ```shell
 curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s --
