@@ -14,6 +14,7 @@ GEOP_IP_SUPPORT=false
 LDAP_AUTH_SUPPORT=false
 PAGESPEED_SUPPORT=false
 FORCE_INSTALL=false
+BULD_DIR='/usr/local/src/Nginx_Installation_Files'
 VERSION_TO_INSTALL=$STABLE
 ARGUMENT_STR='--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module --with-stream ';
 YUM_PACKAGES='openssl-devel libxml2-devel libxslt-devel gd gcc-c++ make perl-ExtUtils-Embed zlib-devel pcre-devel curl unzip ';
@@ -26,12 +27,12 @@ function die {
 
 function init_tmp {
 	# Crerate Temp installer dir
-	sudo mkdir -p /tmp/NginxInstaller;
+	sudo mkdir -p $BULD_DIR;
 }
 
 function cleanup_tmp {
 	# Cleanup Temp installer dir
-	sudo rm -rf /tmp/NginxInstaller;
+	sudo rm -rf $BULD_DIR;
 }
 
 function prep_args {
@@ -47,64 +48,66 @@ function prep_args {
 	fi
 	# If we are installing page speed support add it to the build options
 	if $PAGESPEED_SUPPORT; then
-		ARGUMENT_STR=$ARGUMENT_STR'--add-module=/usr/local/src/ngx_pagespeed-latest-stable ';
+		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/ngx_pagespeed-latest-stable ';
 	fi
 	# IF we are to install the VTS add it to the argument string
 	# https://github.com/vozlt/nginx-module-vts
 	if $INSTALL_VTS; then
-		ARGUMENT_STR=$ARGUMENT_STR'--add-module=/usr/local/src/nginx-module-vts-master ';
+		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/nginx-module-vts-master ';
 	fi
 	# If wee need ALPN add ssl argument
 	if $ALPN_SUPPORT; then
-		ARGUMENT_STR=$ARGUMENT_STR'--with-openssl=/usr/local/src/'$OPENSSL_VERSION' ';
+		ARGUMENT_STR=$ARGUMENT_STR'--with-openssl='$BULD_DIR'/'$OPENSSL_VERSION' ';
 	fi
 	# ADD LDAP module arguments
 	if $LDAP_AUTH_SUPPORT; then
-		ARGUMENT_STR=$ARGUMENT_STR'--add-module=/usr/local/src/nginx-auth-ldap-master ';
+		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/nginx-auth-ldap-master ';
 		YUM_PACKAGES=$YUM_PACKAGES'openldap-devel openldap openldap-clients ';
 		APT_PACKAGES=$APT_PACKAGES'libldap2-dev openldap ';
 	fi
 }
 
 function prep_modules {
-	cd /usr/local/src;
 	# IF we are to install the VTS module download it
 	# https://github.com/vozlt/nginx-module-vts
 	if $INSTALL_VTS; then
-		cd /usr/local/src;
+		cd $BULD_DIR;
 		curl -o nginx-vts-module.tar.gz https://codeload.github.com/vozlt/nginx-module-vts/tar.gz/master;
-		tar -zxvf nginx-vts-module.tar.gz -C /usr/local/src;
+		tar -zxvf nginx-vts-module.tar.gz -C $BULD_DIR;
 		rm nginx-vts-module.tar.gz;
 	fi
 	# Download OpenSSL
 	if $ALPN_SUPPORT; then
-		cd /usr/local/src;
+		cd $BULD_DIR;
 		curl -o $OPENSSL_VERSION'.tar.gz' 'https://www.openssl.org/source/'$OPENSSL_VERSION'.tar.gz';
-		tar -zxvf $OPENSSL_VERSION'.tar.gz' -C /usr/local/src;
+		tar -zxvf $OPENSSL_VERSION'.tar.gz' -C $BULD_DIR;
 		rm $OPENSSL_VERSION'.tar.gz';
 	fi
 	# Download LDAP auth module
 	if $LDAP_AUTH_SUPPORT; then
-		cd /usr/local/src;
+		cd $BULD_DIR;
 		curl -o nginx-auth-ldap.tar.gz https://codeload.github.com/kvspb/nginx-auth-ldap/tar.gz/master;
-		tar -zxvf  nginx-auth-ldap.tar.gz -C /usr/local/src;
+		tar -zxvf  nginx-auth-ldap.tar.gz -C $BULD_DIR;
 		rm nginx-auth-ldap.tar.gz;
 	fi
 	# Download the PageSpeed module source
 	if $PAGESPEED_SUPPORT; then
-		cd /usr/local/src;
+		cd $BULD_DIR;
 		curl -o pagespeed-latest.tar.gz https://codeload.github.com/pagespeed/ngx_pagespeed/tar.gz/latest-stable;
-		tar -zxvf pagespeed-latest.tar.gz -C /usr/local/src;
+		tar -zxvf pagespeed-latest.tar.gz -C $BULD_DIR;
 		rm pagespeed-latest.tar.gz;
+		cd $BULD_DIR/ngx_pagespeed-latest-stable;
+		wget https://dl.google.com/dl/page-speed/psol/1.11.33.4.tar.gz;
+		tar -xzvf 1.11.33.4.tar.gz;
+		rm 1.11.33.4.tar.gz;
 	fi
 }
 
 function download_build_nginx {
-	cd /tmp/NginxInstaller;
 	# Get Nginx Source
-	cd /tmp/NginxInstaller; curl http://nginx.org/download/nginx-$VERSION_TO_INSTALL.tar.gz | tar xvz;
+	cd $BULD_DIR; curl http://nginx.org/download/nginx-$VERSION_TO_INSTALL.tar.gz | tar xvz;
 	# Move into nginx src directory.
-	cd /tmp/NginxInstaller/nginx-$VERSION_TO_INSTALL;
+	cd $BULD_DIR/nginx-$VERSION_TO_INSTALL;
 	# Configure with the module path
 	./configure $ARGUMENT_STR;
 	# Exit if configure failed
@@ -142,13 +145,13 @@ function debian_install {
 	# Remove apt-version of nginx
 	sudo apt-get remove --purge nginx nginx-* -y;
 	# Get nginx init script
-	cd /tmp/NginxInstaller; curl -o nginx-sysvinit-script.zip https://codeload.github.com/Fleshgrinder/nginx-sysvinit-script/zip/master && aunpack nginx-sysvinit-script.zip; rm nginx-sysvinit-script.zip;
+	cd $BULD_DIR; curl -o nginx-sysvinit-script.zip https://codeload.github.com/Fleshgrinder/nginx-sysvinit-script/zip/master && aunpack nginx-sysvinit-script.zip; rm nginx-sysvinit-script.zip;
 	# Gather Modules to be installed
 	prep_modules;
 	# Get Nginx and build it
 	download_build_nginx;
 	# Install NGINX init script
-	cd /tmp/NginxInstaller/nginx-sysvinit-script-master; sudo make;
+	cd $BULD_DIR/nginx-sysvinit-script-master; sudo make;
 	# exit if it fails while installing init script
 	die "Failed, at make init script aborting...";
 	# Verify nginx
@@ -166,7 +169,7 @@ function rhel_install {
 	# Get Nginx and build it
 	download_build_nginx;
 	# Download RHEL/Centos init script
-	cd /tmp/NginxInstaller; curl -o rhel-init.sh https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/support/init-rhel.sh;
+	cd $BULD_DIR; curl -o rhel-init.sh https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/support/init-rhel.sh;
 	# Move the init script in place
 	sudo mv rhel-init.sh /etc/init.d/nginx;
 	# exit if it fails while installing init script
@@ -188,11 +191,11 @@ function begin_install {
 	if [ -f /etc/redhat-release ]; then
 		init_tmp;
 		rhel_install;
-		cleanup_tmp;
+		#cleanup_tmp;
 	elif [ -f /etc/debian_version ]; then
 		init_tmp;
 		debian_install;
-		cleanup_tmp;
+		#cleanup_tmp;
 	else
 		echo 'Supported Distros are RHEL/Centos and Debian/Ubuntu... sorry.';
 	fi
