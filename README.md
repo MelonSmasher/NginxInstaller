@@ -19,5 +19,6 @@ curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/ng
 * -v `Compile with VTS module` [more info](https://github.com/vozlt/nginx-module-vts)
 * -a `Compile with ALPN support`
 * -g `Compile with GEO IP module`
+* -p `Compile with PageSpeed module` [more info](https://developers.google.com/speed/pagespeed/)
 * -l `Compile with LDAP auth module` [more info](https://github.com/kvspb/nginx-auth-ldap)
 * -f `Force the installation even if the correct version is installed.`

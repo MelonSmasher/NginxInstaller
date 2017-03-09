@@ -12,11 +12,12 @@ INSTALL_VTS=false
 ALPN_SUPPORT=false
 GEOP_IP_SUPPORT=false
 LDAP_AUTH_SUPPORT=false
+PAGESPEED_SUPPORT=false
 FORCE_INSTALL=false
 VERSION_TO_INSTALL=$STABLE
 ARGUMENT_STR='--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module --with-stream ';
-YUM_PACKAGES='openssl-devel libxml2-devel libxslt-devel gd perl-ExtUtils-Embed zlib-devel pcre-devel curl unzip ';
-APT_PACKAGES='build-essential zlib1g-dev libpcre3-dev libssl-dev libssl-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgoogle-perftools-dev libperl-dev curl unzip atool chkconfig ';
+YUM_PACKAGES='openssl-devel libxml2-devel libxslt-devel gd gcc-c++ make perl-ExtUtils-Embed zlib-devel pcre-devel curl unzip ';
+APT_PACKAGES='build-essential zlib1g-dev libpcre3 libpcre3-dev libssl-dev libssl-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgoogle-perftools-dev libperl-dev curl unzip atool chkconfig ';
 
 # Function called when the script fails
 function die {
@@ -44,6 +45,10 @@ function prep_args {
 		YUM_PACKAGES=$YUM_PACKAGES'GeoIP-devel GeoIP ';
 		APT_PACKAGES=$APT_PACKAGES'libgeoip-dev ';
 	fi
+	# If we are installing page speed support add it to the build options
+	if $PAGESPEED_SUPPORT; then
+		ARGUMENT_STR=$ARGUMENT_STR'--add-module=/usr/local/src/ngx_pagespeed-latest-stable ';
+	fi
 	# IF we are to install the VTS add it to the argument string
 	# https://github.com/vozlt/nginx-module-vts
 	if $INSTALL_VTS; then
@@ -67,9 +72,9 @@ function prep_modules {
 	# https://github.com/vozlt/nginx-module-vts
 	if $INSTALL_VTS; then
 		cd /usr/local/src;
-		curl -o nginx-vts-module.zip https://codeload.github.com/vozlt/nginx-module-vts/zip/master;
-		unzip nginx-vts-module.zip;
-		rm nginx-vts-module.zip;
+		curl -o nginx-vts-module.tar.gz https://codeload.github.com/vozlt/nginx-module-vts/tar.gz/master;
+		tar -zxvf nginx-vts-module.tar.gz -C /usr/local/src;
+		rm nginx-vts-module.tar.gz;
 	fi
 	# Download OpenSSL
 	if $ALPN_SUPPORT; then
@@ -81,9 +86,16 @@ function prep_modules {
 	# Download LDAP auth module
 	if $LDAP_AUTH_SUPPORT; then
 		cd /usr/local/src;
-		curl -o nginx-auth-ldap.zip https://codeload.github.com/kvspb/nginx-auth-ldap/zip/master;
-		unzip nginx-auth-ldap.zip;
-		rm nginx-auth-ldap.zip;
+		curl -o nginx-auth-ldap.tar.gz https://codeload.github.com/kvspb/nginx-auth-ldap/tar.gz/master;
+		tar -zxvf  nginx-auth-ldap.tar.gz -C /usr/local/src;
+		rm nginx-auth-ldap.tar.gz;
+	fi
+	# Download the PageSpeed module source
+	if $PAGESPEED_SUPPORT; then
+		cd /usr/local/src;
+		curl -o pagespeed-latest.tar.gz https://codeload.github.com/pagespeed/ngx_pagespeed/tar.gz/latest-stable;
+		tar -zxvf pagespeed-latest.tar.gz -C /usr/local/src;
+		rm pagespeed-latest.tar.gz;
 	fi
 }
 
@@ -102,7 +114,7 @@ function download_build_nginx {
 	# Exit if make failed
 	die "Failed, at make aborting...";
 	# Stop Nginx if it is installed from source.
-	sudo /etc/init.d/nginx stop;
+	sudo service nginx stop;
 	# Install Nginx
 	sudo make install;
 	# Exit if install failed
@@ -186,7 +198,7 @@ function begin_install {
 	fi
 }
 
-while getopts "xmvaglf" flag; do
+while getopts "xmvaglfp" flag; do
   case "${flag}" in
     x) INSTALL_MAINLINE=true ;;
     m) INSTALL_MAIL=true ;;
@@ -195,6 +207,7 @@ while getopts "xmvaglf" flag; do
     g) GEOP_IP_SUPPORT=true ;;
     l) LDAP_AUTH_SUPPORT=true ;;
     f) FORCE_INSTALL=true ;;
+    p) PAGESPEED_SUPPORT=true ;;
     *) echo "Unexpected option ${flag} ... ignoring" ;;
   esac
 done
