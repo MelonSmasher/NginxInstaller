@@ -6,7 +6,7 @@
 curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s --
 ```
 
-### Mainline (1.11.9) with HTTP/2
+### Mainline (1.11.10) with HTTP/2
 
 ```shell
 curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s -- -x

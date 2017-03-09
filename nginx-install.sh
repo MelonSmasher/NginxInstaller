@@ -2,7 +2,7 @@
 
 # NGINX Versions
 STABLE="1.10.3"
-MAINLINE="1.11.9"
+MAINLINE="1.11.10"
 # OpenSSL Version for ALPN
 OPENSSL_VERSION='openssl-1.0.2j'
 # Default Flag Values
