@@ -4,7 +4,7 @@
 STABLE="1.10.3"
 MAINLINE="1.11.10"
 # OpenSSL Version for ALPN
-OPENSSL_VERSION='openssl-1.0.2j'
+OPENSSL_VERSION='openssl-1.0.2k'
 # Default Flag Values
 INSTALL_MAINLINE=false
 INSTALL_MAIL=false
