@@ -13,6 +13,7 @@ ALPN_SUPPORT=false
 GEOP_IP_SUPPORT=false
 LDAP_AUTH_SUPPORT=false
 PAGESPEED_SUPPORT=false
+CACHE_PURGE_SUPPORT=false
 FORCE_INSTALL=false
 BULD_DIR='/usr/local/src/Nginx_Installation_Files'
 VERSION_TO_INSTALL=$STABLE
@@ -49,6 +50,10 @@ function prep_args {
 	# If we are installing page speed support add it to the build options
 	if $PAGESPEED_SUPPORT; then
 		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/ngx_pagespeed-latest-stable ';
+	fi
+	# If we are building with the cache purge module add it here
+	if $CACHE_PURGE_SUPPORT; then
+		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/ngx_cache_purge-2.3 ';
 	fi
 	# IF we are to install the VTS add it to the argument string
 	# https://github.com/vozlt/nginx-module-vts
@@ -100,6 +105,13 @@ function prep_modules {
 		wget https://dl.google.com/dl/page-speed/psol/1.11.33.4.tar.gz;
 		tar -xzvf 1.11.33.4.tar.gz;
 		rm 1.11.33.4.tar.gz;
+	fi
+	# Download the CachePurge module
+	if $CACHE_PURGE_SUPPORT; then
+		cd $BULD_DIR;
+		curl -o ngx_cache_purge.tar.gz https://codeload.github.com/FRiCKLE/ngx_cache_purge/tar.gz/2.3;
+		tar -zxvf  ngx_cache_purge.tar.gz -C $BULD_DIR;
+		rm ngx_cache_purge.tar.gz;
 	fi
 }
 
@@ -201,7 +213,7 @@ function begin_install {
 	fi
 }
 
-while getopts "xmvaglfp" flag; do
+while getopts "xmvaglfpc" flag; do
   case "${flag}" in
     x) INSTALL_MAINLINE=true ;;
     m) INSTALL_MAIL=true ;;
@@ -211,6 +223,7 @@ while getopts "xmvaglfp" flag; do
     l) LDAP_AUTH_SUPPORT=true ;;
     f) FORCE_INSTALL=true ;;
     p) PAGESPEED_SUPPORT=true ;;
+    c) CACHE_PURGE_SUPPORT=true ;;
     *) echo "Unexpected option ${flag} ... ignoring" ;;
   esac
 done
