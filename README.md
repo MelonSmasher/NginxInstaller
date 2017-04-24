@@ -1,15 +1,15 @@
 # To Install:
 
-### Stable (1.10.3) with HTTP/2
+### Stable (1.12.0) with HTTP/2
 
 ```shell
-curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s --
+curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s -- -a
 ```
 
-### Mainline (1.11.10) with HTTP/2
+### Mainline (1.11.13) with HTTP/2
 
 ```shell
-curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s -- -x
+curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s -- -x -a
 ```
 
 #### Options:
@@ -17,7 +17,7 @@ curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/ng
 * -x `Install Mainline instead of Stable`
 * -m `Compile with Mail module`
 * -v `Compile with VTS module` [more info](https://github.com/vozlt/nginx-module-vts)
-* -a `Compile with ALPN support`
+* -a `Compile with ALPN support` - (Need this for HTTP2/SPDY)
 * -g `Compile with GEO IP module`
 * -p `Compile with PageSpeed module` [more info](https://developers.google.com/speed/pagespeed/)
 * -c `Compile with CachePurge module` [more info](https://github.com/FRiCKLE/ngx_cache_purge)
