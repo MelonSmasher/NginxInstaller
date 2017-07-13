@@ -1,8 +1,8 @@
 #! /bin/bash
 
 # NGINX Versions
-STABLE="1.12.0"
-MAINLINE="1.13.0"
+STABLE="1.12.1"
+MAINLINE="1.13.3"
 # OpenSSL Version for ALPN
 OPENSSL_VERSION='openssl-1.0.2k'
 # Default Flag Values
