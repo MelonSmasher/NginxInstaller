@@ -53,7 +53,7 @@ function prep_args {
 	fi
 	# If we are building with the cache purge module add it here
 	if $CACHE_PURGE_SUPPORT; then
-		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/ngx_cache_purge-2.4.2 ';
+		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/ngx_cache_purge-master ';
 	fi
 	# IF we are to install the VTS add it to the argument string
 	# https://github.com/vozlt/nginx-module-vts
@@ -110,7 +110,7 @@ function prep_modules {
 	# Download the CachePurge module
 	if $CACHE_PURGE_SUPPORT; then
 		cd $BULD_DIR;
-		curl -o ngx_cache_purge.tar.gz https://codeload.github.com/nginx-modules/ngx_cache_purge/tar.gz/2.4.2;
+		curl -o ngx_cache_purge.tar.gz https://codeload.github.com/nginx-modules/ngx_cache_purge/tar.gz/master;
 		tar -zxvf  ngx_cache_purge.tar.gz -C $BULD_DIR;
 		rm ngx_cache_purge.tar.gz;
 	fi
