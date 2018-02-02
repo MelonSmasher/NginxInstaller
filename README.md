@@ -1,12 +1,12 @@
 # To Install:
 
-### Stable (1.12.1) with HTTP/2
+### Stable (1.12.2) with HTTP/2
 
 ```shell
 curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s -- -a
 ```
 
-### Mainline (1.13.5) with HTTP/2
+### Mainline (1.13.8) with HTTP/2
 
 ```shell
 curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s -- -x -a
@@ -20,6 +20,6 @@ curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/ng
 * -a `Compile with ALPN support` - (Need this for HTTP2/SPDY)
 * -g `Compile with GEO IP module`
 * -p `Compile with PageSpeed module` [more info](https://developers.google.com/speed/pagespeed/)
-* -c `Compile with CachePurge module` [more info](https://github.com/FRiCKLE/ngx_cache_purge)
+* -c `Compile with CachePurge module` [more info](https://github.com/nginx-modules/ngx_cache_purge)
 * -l `Compile with LDAP auth module` [more info](https://github.com/kvspb/nginx-auth-ldap)
 * -f `Force the installation even if the correct version is installed.`

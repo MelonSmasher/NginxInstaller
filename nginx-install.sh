@@ -1,8 +1,8 @@
 #! /bin/bash
 
 # NGINX Versions
-STABLE="1.12.1"
-MAINLINE="1.13.5"
+STABLE="1.12.2"
+MAINLINE="1.13.8"
 # OpenSSL Version for ALPN
 OPENSSL_VERSION='openssl-1.0.2l'
 # Default Flag Values
@@ -110,7 +110,7 @@ function prep_modules {
 	# Download the CachePurge module
 	if $CACHE_PURGE_SUPPORT; then
 		cd $BULD_DIR;
-		curl -o ngx_cache_purge.tar.gz https://codeload.github.com/FRiCKLE/ngx_cache_purge/tar.gz/2.3;
+		curl -o ngx_cache_purge.tar.gz https://codeload.github.com/nginx-modules/ngx_cache_purge/tar.gz/2.4.2;
 		tar -zxvf  ngx_cache_purge.tar.gz -C $BULD_DIR;
 		rm ngx_cache_purge.tar.gz;
 	fi
