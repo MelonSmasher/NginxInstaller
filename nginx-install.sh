@@ -4,7 +4,7 @@
 STABLE="1.12.2"
 MAINLINE="1.13.8"
 # OpenSSL Version for ALPN
-OPENSSL_VERSION='openssl-1.0.2l'
+OPENSSL_VERSION='openssl-1.0.2n'
 # Default Flag Values
 INSTALL_MAINLINE=false
 INSTALL_MAIL=false
@@ -53,7 +53,7 @@ function prep_args {
 	fi
 	# If we are building with the cache purge module add it here
 	if $CACHE_PURGE_SUPPORT; then
-		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/ngx_cache_purge-2.3 ';
+		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/ngx_cache_purge-2.4.2 ';
 	fi
 	# IF we are to install the VTS add it to the argument string
 	# https://github.com/vozlt/nginx-module-vts
