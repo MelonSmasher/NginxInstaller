@@ -36,6 +36,11 @@ function cleanup_tmp {
 	sudo rm -rf $BULD_DIR;
 }
 
+function mk_confd {
+	# Make the conf.d dir in /etc/nginx
+	sudo mkdir -p /etc/nginx/conf.d;
+}
+
 function prep_args {
 	# If we are installing the mail module add the
 	if $INSTALL_MAIL;
@@ -204,10 +209,12 @@ function begin_install {
 	if [ -f /etc/redhat-release ]; then
 		init_tmp;
 		rhel_install;
+		mk_confd;
 		#cleanup_tmp;
 	elif [ -f /etc/debian_version ]; then
 		init_tmp;
 		debian_install;
+		mk_confd;
 		#cleanup_tmp;
 	else
 		echo 'Supported Distros are RHEL/Centos and Debian/Ubuntu... sorry.';
