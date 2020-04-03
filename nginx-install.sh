@@ -89,7 +89,7 @@ function prep_modules {
 	# Download OpenSSL
 	if $ALPN_SUPPORT; then
 		cd $BULD_DIR;
-		curl -o $OPENSSL_VERSION'.tar.gz' 'https://www.openssl.org/source/'$OPENSSL_VERSION'.tar.gz';
+		curl -o $OPENSSL_VERSION'.tar.gz' 'https://www.openssl.org/source/old/1.0.2/'$OPENSSL_VERSION'.tar.gz';
 		tar -zxvf $OPENSSL_VERSION'.tar.gz' -C $BULD_DIR;
 		rm $OPENSSL_VERSION'.tar.gz';
 	fi
