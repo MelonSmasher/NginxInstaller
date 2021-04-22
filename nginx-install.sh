@@ -1,8 +1,8 @@
 #! /bin/bash
 
 # NGINX Versions
-STABLE="1.16.1"
-MAINLINE="1.17.8"
+STABLE="1.20.0"
+MAINLINE="1.19.10"
 # OpenSSL Version for ALPN
 OPENSSL_VERSION='openssl-1.0.2u'
 # Default Flag Values
@@ -19,7 +19,7 @@ BULD_DIR='/usr/local/src/Nginx_Installation_Files'
 VERSION_TO_INSTALL=$STABLE
 ARGUMENT_STR='--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module --with-http_sub_module --with-stream --with-stream_ssl_module ';
 YUM_PACKAGES='openssl-devel libxml2-devel libxslt-devel gd gcc-c++ make perl-ExtUtils-Embed zlib-devel pcre-devel curl unzip ';
-APT_PACKAGES='build-essential zlib1g-dev libpcre3 libpcre3-dev libssl-dev libssl-dev libxslt1-dev libxml2-dev libgd2-xpm-dev libgoogle-perftools-dev libperl-dev curl unzip atool ';
+APT_PACKAGES='build-essential zlib1g-dev libpcre3 libpcre3-dev libssl-dev libssl-dev libxslt1-dev libxml2-dev pcre2-utils libgoogle-perftools-dev libperl-dev curl unzip atool ';
 
 # Function called when the script fails
 function die {
