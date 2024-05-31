@@ -100,18 +100,18 @@ function prep_modules {
 		tar -zxvf  nginx-auth-ldap.tar.gz -C $BULD_DIR;
 		rm nginx-auth-ldap.tar.gz;
 	fi
-	# Download the PageSpeed module source
-	if $PAGESPEED_SUPPORT; then
-		cd $BULD_DIR;
-		curl -o pagespeed-latest.tar.gz https://codeload.github.com/pagespeed/ngx_pagespeed/tar.gz/latest-stable;
-		tar -zxvf pagespeed-latest.tar.gz -C $BULD_DIR;
-		rm pagespeed-latest.tar.gz;
-		cd $BULD_DIR/ngx_pagespeed-latest-stable;
-		PSOL_URL=$(cat PSOL_BINARY_URL | sed 's/$BIT_SIZE_NAME/x64/');
-		wget -O psol.tar.gz $PSOL_URL;
-		tar -xzvf psol.tar.gz;
-		rm psol.tar.gz;
-	fi
+	# # Download the PageSpeed module source
+	# if $PAGESPEED_SUPPORT; then
+	# 	cd $BULD_DIR;
+	# 	curl -o pagespeed-latest.tar.gz https://codeload.github.com/pagespeed/ngx_pagespeed/tar.gz/latest-stable;
+	# 	tar -zxvf pagespeed-latest.tar.gz -C $BULD_DIR;
+	# 	rm pagespeed-latest.tar.gz;
+	# 	cd $BULD_DIR/ngx_pagespeed-latest-stable;
+	# 	PSOL_URL=$(cat PSOL_BINARY_URL | sed 's/$BIT_SIZE_NAME/x64/');
+	# 	wget -O psol.tar.gz $PSOL_URL;
+	# 	tar -xzvf psol.tar.gz;
+	# 	rm psol.tar.gz;
+	# fi
 	# Download the CachePurge module
 	if $CACHE_PURGE_SUPPORT; then
 		cd $BULD_DIR;
@@ -230,7 +230,7 @@ while getopts "xmvaglfpc" flag; do
     g) GEOP_IP_SUPPORT=true ;;
     l) LDAP_AUTH_SUPPORT=true ;;
     f) FORCE_INSTALL=true ;;
-    p) PAGESPEED_SUPPORT=true ;;
+    # p) PAGESPEED_SUPPORT=true ;;
     c) CACHE_PURGE_SUPPORT=true ;;
     *) echo "Unexpected option ${flag} ... ignoring" ;;
   esac
