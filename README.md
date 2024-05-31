@@ -1,12 +1,12 @@
 # To Install
 
-## Stable (1.20.0) with HTTP/2
+## Stable (1.26.1) with HTTP/2
 
 ```shell
 curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s -- -a
 ```
 
-## Mainline (1.19.10) with HTTP/2
+## Mainline (1.27.0) with HTTP/2
 
 ```shell
 curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/nginx-install.sh | bash -s -- -x -a
