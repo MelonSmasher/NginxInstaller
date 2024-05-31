@@ -17,7 +17,6 @@ curl -sL https://raw.githubusercontent.com/MelonSmasher/NginxInstaller/master/ng
 * -x `Install Mainline instead of Stable`
 * -m `Compile with Mail module`
 * -v `Compile with VTS module` [more info](https://github.com/vozlt/nginx-module-vts)
-* -a `Compile with ALPN support` - (Need this for HTTP2/SPDY)
 * -g `Compile with GEO IP module`
 * -c `Compile with CachePurge module` [more info](https://github.com/nginx-modules/ngx_cache_purge)
 * -l `Compile with LDAP auth module` [more info](https://github.com/kvspb/nginx-auth-ldap)

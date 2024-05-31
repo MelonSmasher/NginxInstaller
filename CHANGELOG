@@ -2,6 +2,7 @@
 * Updated mainline to 1.27.0
 * Updated openssl to 1.0.2u
 * Removed pagespeed module support
+* Removed custom ALP/OPENSSL versions
 
 * Updated from 1.9.12 --> 1.9.13
 * added --with-http_stub_status_module

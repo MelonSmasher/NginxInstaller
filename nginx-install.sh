@@ -52,10 +52,10 @@ function prep_args {
 		YUM_PACKAGES=$YUM_PACKAGES'GeoIP-devel GeoIP ';
 		APT_PACKAGES=$APT_PACKAGES'libgeoip-dev ';
 	fi
-	# If we are installing page speed support add it to the build options
-	if $PAGESPEED_SUPPORT; then
-		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/ngx_pagespeed-latest-stable ';
-	fi
+	# # If we are installing page speed support add it to the build options
+	# if $PAGESPEED_SUPPORT; then
+	# 	ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/ngx_pagespeed-latest-stable ';
+	# fi
 	# If we are building with the cache purge module add it here
 	if $CACHE_PURGE_SUPPORT; then
 		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/ngx_cache_purge-master ';
@@ -65,10 +65,10 @@ function prep_args {
 	if $INSTALL_VTS; then
 		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/nginx-module-vts-master ';
 	fi
-	# If wee need ALPN add ssl argument
-	if $ALPN_SUPPORT; then
-		ARGUMENT_STR=$ARGUMENT_STR'--with-openssl='$BULD_DIR'/'$OPENSSL_VERSION' ';
-	fi
+	# # If wee need ALPN add ssl argument
+	# if $ALPN_SUPPORT; then
+	# 	ARGUMENT_STR=$ARGUMENT_STR'--with-openssl='$BULD_DIR'/'$OPENSSL_VERSION' ';
+	# fi
 	# ADD LDAP module arguments
 	if $LDAP_AUTH_SUPPORT; then
 		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/nginx-auth-ldap-master ';
@@ -86,13 +86,13 @@ function prep_modules {
 		tar -zxvf nginx-vts-module.tar.gz -C $BULD_DIR;
 		rm nginx-vts-module.tar.gz;
 	fi
-	# Download OpenSSL
-	if $ALPN_SUPPORT; then
-		cd $BULD_DIR;
-		curl -o $OPENSSL_VERSION'.tar.gz' 'https://www.openssl.org/source/old/1.0.2/'$OPENSSL_VERSION'.tar.gz';
-		tar -zxvf $OPENSSL_VERSION'.tar.gz' -C $BULD_DIR;
-		rm $OPENSSL_VERSION'.tar.gz';
-	fi
+	# # Download OpenSSL
+	# if $ALPN_SUPPORT; then
+	# 	cd $BULD_DIR;
+	# 	curl -o $OPENSSL_VERSION'.tar.gz' 'https://www.openssl.org/source/old/1.0.2/'$OPENSSL_VERSION'.tar.gz';
+	# 	tar -zxvf $OPENSSL_VERSION'.tar.gz' -C $BULD_DIR;
+	# 	rm $OPENSSL_VERSION'.tar.gz';
+	# fi
 	# Download LDAP auth module
 	if $LDAP_AUTH_SUPPORT; then
 		cd $BULD_DIR;
@@ -226,7 +226,7 @@ while getopts "xmvaglfpc" flag; do
     x) INSTALL_MAINLINE=true ;;
     m) INSTALL_MAIL=true ;;
     v) INSTALL_VTS=true ;;
-    a) ALPN_SUPPORT=true ;;
+    # a) ALPN_SUPPORT=true ;;
     g) GEOP_IP_SUPPORT=true ;;
     l) LDAP_AUTH_SUPPORT=true ;;
     f) FORCE_INSTALL=true ;;
