@@ -1,6 +1,6 @@
-*  updated stable to 1.26.1
-*  updated mainline to 1.27.0
-*  updated openssl to 1.0.2u
+* Updated stable to 1.26.1
+* Updated mainline to 1.27.0
+* Updated openssl to 1.0.2u
 
 * Updated from 1.9.12 --> 1.9.13
 * added --with-http_stub_status_module
