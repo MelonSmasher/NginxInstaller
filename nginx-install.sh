@@ -109,7 +109,7 @@ function prep_modules {
 
 function download_build_nginx {
 	# Get Nginx Source
-	cd $BULD_DIR; curl http://nginx.org/download/nginx-$VERSION_TO_INSTALL.tar.gz | tar xvz;
+	cd $BULD_DIR; curl https://nginx.org/download/nginx-$VERSION_TO_INSTALL.tar.gz | tar xvz;
 	# Move into nginx src directory.
 	cd $BULD_DIR/nginx-$VERSION_TO_INSTALL;
 	# Configure with the module path
@@ -170,6 +170,8 @@ function rhel_install {
 	sudo yum -y install $YUM_PACKAGES;
 	# nginx links the system OpenSSL; `yum install` skips already-installed packages, so upgrade explicitly
 	sudo yum -y upgrade openssl openssl-libs openssl-devel;
+	# Exit if the OpenSSL upgrade failed
+	die "Failed, at OpenSSL upgrade aborting...";
 	# Gather Modules to be installed
 	prep_modules;
 	# Get Nginx and build it

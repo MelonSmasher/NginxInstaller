@@ -3,6 +3,7 @@
 * Upgrade distro OpenSSL (openssl/libssl-dev, openssl/openssl-libs/openssl-devel) before building
 * Removed dead openssl-1.0.2u/ALPN leftovers; nginx links the system OpenSSL
 * Fixed -c: ngx_cache_purge renamed its default branch to main (master now 404s, configure aborted)
+* Download nginx source over HTTPS
 
 * Updated stable to 1.26.2
 * Updated mainline to 1.27.1
