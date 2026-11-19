@@ -1,15 +1,12 @@
 #! /bin/bash
 
 # NGINX Versions
-STABLE="1.26.2"
-MAINLINE="1.27.1"
-# OpenSSL Version for ALPN
-OPENSSL_VERSION='openssl-1.0.2u'
+STABLE="1.30.7"
+MAINLINE="1.31.9"
 # Default Flag Values
 INSTALL_MAINLINE=false
 INSTALL_MAIL=false
 INSTALL_VTS=false
-ALPN_SUPPORT=false
 GEOP_IP_SUPPORT=false
 LDAP_AUTH_SUPPORT=false
 PAGESPEED_SUPPORT=false
@@ -19,7 +16,7 @@ BULD_DIR='/usr/local/src/Nginx_Installation_Files'
 VERSION_TO_INSTALL=$STABLE
 ARGUMENT_STR='--user=nginx --group=nginx --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --with-http_gzip_static_module --with-pcre-jit --with-http_ssl_module --with-pcre --with-file-aio --with-http_realip_module --with-http_v2_module --with-http_stub_status_module --with-http_sub_module --with-stream --with-stream_ssl_module ';
 YUM_PACKAGES='openssl-devel libxml2-devel libxslt-devel gd gcc-c++ make perl-ExtUtils-Embed zlib-devel pcre-devel curl unzip ';
-APT_PACKAGES='build-essential zlib1g-dev libpcre3 libpcre3-dev libssl-dev libssl-dev libxslt1-dev libxml2-dev pcre2-utils libgoogle-perftools-dev libperl-dev curl unzip atool ';
+APT_PACKAGES='build-essential zlib1g-dev libpcre3 libpcre3-dev openssl libssl-dev libxslt1-dev libxml2-dev pcre2-utils libgoogle-perftools-dev libperl-dev curl unzip atool ';
 
 # Function called when the script fails
 function die {
@@ -58,17 +55,13 @@ function prep_args {
 	# fi
 	# If we are building with the cache purge module add it here
 	if $CACHE_PURGE_SUPPORT; then
-		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/ngx_cache_purge-master ';
+		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/ngx_cache_purge-main ';
 	fi
 	# IF we are to install the VTS add it to the argument string
 	# https://github.com/vozlt/nginx-module-vts
 	if $INSTALL_VTS; then
 		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/nginx-module-vts-master ';
 	fi
-	# # If wee need ALPN add ssl argument
-	# if $ALPN_SUPPORT; then
-	# 	ARGUMENT_STR=$ARGUMENT_STR'--with-openssl='$BULD_DIR'/'$OPENSSL_VERSION' ';
-	# fi
 	# ADD LDAP module arguments
 	if $LDAP_AUTH_SUPPORT; then
 		ARGUMENT_STR=$ARGUMENT_STR'--add-module='$BULD_DIR'/nginx-auth-ldap-master ';
@@ -86,13 +79,6 @@ function prep_modules {
 		tar -zxvf nginx-vts-module.tar.gz -C $BULD_DIR;
 		rm nginx-vts-module.tar.gz;
 	fi
-	# # Download OpenSSL
-	# if $ALPN_SUPPORT; then
-	# 	cd $BULD_DIR;
-	# 	curl -o $OPENSSL_VERSION'.tar.gz' 'https://www.openssl.org/source/old/1.0.2/'$OPENSSL_VERSION'.tar.gz';
-	# 	tar -zxvf $OPENSSL_VERSION'.tar.gz' -C $BULD_DIR;
-	# 	rm $OPENSSL_VERSION'.tar.gz';
-	# fi
 	# Download LDAP auth module
 	if $LDAP_AUTH_SUPPORT; then
 		cd $BULD_DIR;
@@ -115,7 +101,7 @@ function prep_modules {
 	# Download the CachePurge module
 	if $CACHE_PURGE_SUPPORT; then
 		cd $BULD_DIR;
-		curl -o ngx_cache_purge.tar.gz https://codeload.github.com/nginx-modules/ngx_cache_purge/tar.gz/master;
+		curl -o ngx_cache_purge.tar.gz https://codeload.github.com/nginx-modules/ngx_cache_purge/tar.gz/main;
 		tar -zxvf  ngx_cache_purge.tar.gz -C $BULD_DIR;
 		rm ngx_cache_purge.tar.gz;
 	fi
@@ -182,6 +168,8 @@ function rhel_install {
 	sudo yum -y groupinstall 'Development Tools';
 	# Install build environment
 	sudo yum -y install $YUM_PACKAGES;
+	# nginx links the system OpenSSL; `yum install` skips already-installed packages, so upgrade explicitly
+	sudo yum -y upgrade openssl openssl-libs openssl-devel;
 	# Gather Modules to be installed
 	prep_modules;
 	# Get Nginx and build it
@@ -226,7 +214,6 @@ while getopts "xmvaglfpc" flag; do
     x) INSTALL_MAINLINE=true ;;
     m) INSTALL_MAIL=true ;;
     v) INSTALL_VTS=true ;;
-    # a) ALPN_SUPPORT=true ;;
     g) GEOP_IP_SUPPORT=true ;;
     l) LDAP_AUTH_SUPPORT=true ;;
     f) FORCE_INSTALL=true ;;
