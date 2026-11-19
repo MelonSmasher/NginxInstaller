@@ -1,3 +1,10 @@
+* Updated stable to 1.30.7 (fixes nginx2root: CVE-2026-123007, CVE-2026-123634, CVE-2026-123633, CVE-2026-121810, CVE-2026-113425)
+* Updated mainline to 1.31.9 (same fixes)
+* Upgrade distro OpenSSL (openssl/libssl-dev, openssl/openssl-libs/openssl-devel) before building
+* Removed dead openssl-1.0.2u/ALPN leftovers; nginx links the system OpenSSL
+* Fixed -c: ngx_cache_purge renamed its default branch to main (master now 404s, configure aborted)
+* Download nginx source over HTTPS
+
 * Updated stable to 1.26.2
 * Updated mainline to 1.27.1
 
